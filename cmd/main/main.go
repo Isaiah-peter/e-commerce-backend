@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Isaiah-peter/e-commerce-backend/pkg/routes"
 	"log"
 	"net/http"
 
@@ -11,6 +12,8 @@ import (
 func main() {
 	port := "Localhost:5000"
 	r := mux.NewRouter()
+	routes.AuthUser(r)
+	routes.UserRoute(r)
 	fmt.Println("server running on Port", port)
 	log.Fatal(http.ListenAndServe(port, r))
 }
