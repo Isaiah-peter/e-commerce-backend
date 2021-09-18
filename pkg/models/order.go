@@ -15,7 +15,7 @@ type Order struct {
 	UserId int64 `json:"user_id" binding:"required"`
 	Product []ProductQty `json:"product"`
 	Amount  int64 `json:"Amount" binding:"required"`
-	Address Address `json:"address"`
+	Address Address
 	Status string `json:"status" default:"pending"`
 }
 

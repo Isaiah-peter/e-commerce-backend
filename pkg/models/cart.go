@@ -16,8 +16,10 @@ type Cart struct {
 }
 
 type ProductQty struct {
+	gorm.Model
 	ProductID int64 `json:"product_id" binding:"required"`
 	Quantity  int64  `json:"quantity" binding:"required"`
+	Product Product
 }
 
 func init() {

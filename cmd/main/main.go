@@ -14,6 +14,7 @@ func main() {
 	r := mux.NewRouter()
 	routes.AuthUser(r)
 	routes.UserRoute(r)
+	routes.Product(r)
 	fmt.Println("server running on Port", port)
 	log.Fatal(http.ListenAndServe(port, r))
 }
