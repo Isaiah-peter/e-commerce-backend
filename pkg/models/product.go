@@ -23,6 +23,7 @@ type Product struct {
 type Category struct {
 	gorm.Model
 	Name string `json:"name"`
+	ProductID int64 `json:"product_id"`
 }
 
 func init() {

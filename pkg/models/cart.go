@@ -20,6 +20,8 @@ type ProductQty struct {
 	ProductID int64 `json:"product_id" binding:"required"`
 	Quantity  int64  `json:"quantity" binding:"required"`
 	Product Product
+	CartID int64 `json:"cart_id"`
+	OrderID int64 `json:"order_id"`
 }
 
 func init() {

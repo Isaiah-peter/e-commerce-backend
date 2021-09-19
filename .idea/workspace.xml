@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f5c650b-11cc-4384-8fec-9a7c4415aa95" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pkg/controllers/product.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/routes/product.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/controllers/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/controllers/product.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/controllers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/controllers/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/models/cart.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/models/cart.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/models/order.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/models/order.go" afterDir="false" />

@@ -22,6 +22,7 @@ type Order struct {
 type Address struct {
 	 gorm.Model
 	 Addresses string `json:"addresses" binding:"required"`
+	 OrderID int64 `json:"order_id"`
 }
 
 func init() {
