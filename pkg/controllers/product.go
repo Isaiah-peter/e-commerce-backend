@@ -173,7 +173,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(category) != 0 {
 		fmt.Println("category",category[0])
-		db.Where("name=?","men").Find(&cat).Pluck("product_id",id)
+		db.Where("name=?",category[0]).Find(&cat).Pluck("product_id",id)
 		fmt.Println(strings.Join(id, ","))
 		u := db.Where("name=?", category[0]).Find(&cat)
 		res, _ := json.Marshal(u)

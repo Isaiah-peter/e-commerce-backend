@@ -30,3 +30,15 @@ func init() {
 	dbc.AutoMigrate(&Cart{}, &ProductQty{})
 }
 
+func (c *Cart) CreateCart() *Cart {
+	dbc.NewRecord(c)
+	dbc.Create(c)
+	return c
+}
+
+func GetCartById(Id int64) (*Cart, *gorm.DB) {
+var getUser Cart
+db := dbu.Where("ID=?", Id).Find(&getUser)
+return &getUser, db
+}
+
