@@ -156,7 +156,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 	var category = r.URL.Query()["categories"]
 	var id []string
 	if len(new) != 0 {
-		productDetail := db.Find(&product).Order("`product`.`id` DESC").Limit(1)
+		productDetail := db.Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(productDetail)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -164,7 +164,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 	}
 	if len(new) == 0 && len(category) == 0 {
-		productDetail := db.Find(&product).Value
+		productDetail := db.Preload("Categories").Find(&product).Value
 		res, _ := json.Marshal(productDetail)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -173,9 +173,21 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(category) != 0 {
 		fmt.Println("category",category[0])
-		db.Where("name=?",category[0]).Find(&cat).Pluck("product_id",id)
+		db.Where("name=?",category).Find(&cat).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
-		u := db.Where("name=?", category[0]).Find(&cat)
+		u := db.Where("ID=?", strings.Join(id, ",")).Preload("Categories").Find(&product).Value
+		res, _ := json.Marshal(u)
+		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	}
+
+	if len(category) != 0 && len(new) != 0 {
+		fmt.Println("category",category[0])
+		db.Where("name=?",category).Find(&cat).Pluck("product_id", &id)
+		fmt.Println(strings.Join(id, ","))
+		u := db.Where("ID=?", strings.Join(id, ",")).Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")

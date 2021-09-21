@@ -11,19 +11,20 @@ import (
 )
 
 var (
-	NewCart models.Cart
+	NewOrder models.Order
 )
 
-func CreateCart(w http.ResponseWriter, r *http.Request) {
+func CreateOrder(w http.ResponseWriter, r *http.Request) {
 	token:=utils.UseToken(r)
-	cart := &models.Cart{}
-    utils.ParseBody(r, cart)
+	cart := &models.Order{}
+	utils.ParseBody(r, cart)
 	verifiedID, err := strconv.ParseInt(fmt.Sprintf("%.f", token["UserID"]), 0, 0)
 	if err != nil {
 		panic(err)
 	}
 	cart.UserId = verifiedID
-	u:= cart.CreateCart()
+	cart.Status = "pending"
+	u:= cart.CreateOrder()
 	res, _ := json.Marshal(u)
 	w.Header().Set("Content-Type", "publication/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -31,9 +32,9 @@ func CreateCart(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-func UpdateCart(w http.ResponseWriter, r *http.Request) {
+func UpdateOrder(w http.ResponseWriter, r *http.Request) {
 	utils.UseToken(r)
-	cart := &models.Cart{}
+	cart := &models.Order{}
 	utils.ParseBody(r, cart)
 	vars := mux.Vars(r)
 	productId := vars["id"]
@@ -42,10 +43,21 @@ func UpdateCart(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	cartDetail, db := models.GetCartById(id)
+	cartDetail, db := models.GetOrderById(id)
 
-	if cart.Product != nil {
-		cartDetail.Product = cart.Product
+	if cart.OrderQuantity != nil {
+		cartDetail.OrderQuantity = cart.OrderQuantity
+	}
+	if cart.Amount != 0 {
+		cartDetail.Amount = cart.Amount
+	}
+
+	if cart.Status != "" {
+		cartDetail.Status = cart.Status
+	}
+
+	if cart.Address.Addresses != "" {
+		cartDetail.Address.Addresses = cart.Address.Addresses
 	}
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -53,12 +65,12 @@ func UpdateCart(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func DeleteCart(w http.ResponseWriter, r *http.Request) {
-	cart := &models.Cart{}
+func DeleteOrder(w http.ResponseWriter, r *http.Request) {
+	cart := &models.Order{}
 	utils.UseToken(r)
 	vars := mux.Vars(r)
 	productId := vars["id"]
-	db.Where("ID=?", productId).Preload("Product").Delete(&cart)
+	db.Where("ID=?", productId).Preload("OrderQuantity").Delete(&cart)
 	res, _ := json.Marshal("you have successfully delete this cart")
 	w.Header().Set("Content-Type", "publication/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -66,14 +78,14 @@ func DeleteCart(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-func GetCartById(w http.ResponseWriter, r *http.Request) {
-	cart := &models.Cart{}
+func GetOrderById(w http.ResponseWriter, r *http.Request) {
+	cart := &models.Order{}
 	token:= utils.UseToken(r)
 	verifiedID, err := strconv.ParseInt(fmt.Sprintf("%.f", token["UserID"]), 0, 0)
 	if err != nil {
 		panic(err)
 	}
-	u:=db.Where("user_id=?", verifiedID).Preload("Product").Find(&cart).Value
+	u:=db.Where("user_id=?", verifiedID).Preload("OrderQuantity").Find(&cart).Value
 	res, _ := json.Marshal(u)
 	w.Header().Set("Content-Type", "publication/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -81,11 +93,11 @@ func GetCartById(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-func GetCart(w http.ResponseWriter, r *http.Request) {
+func GetOrder(w http.ResponseWriter, r *http.Request) {
 	token := utils.UseToken(r)
-	var cart []models.Cart
+	var cart []models.Order
 	if token["IsAdmin"] == true {
-		u := db.Preload("Product").Find(&cart).Value
+		u := db.Preload("OrderQuantity").Find(&cart).Value
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -93,3 +105,5 @@ func GetCart(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 	}
 }
+
+

@@ -15,6 +15,8 @@ func main() {
 	routes.AuthUser(r)
 	routes.UserRoute(r)
 	routes.Product(r)
+	routes.OrderRoute(r)
+	routes.CartRoute(r)
 	fmt.Println("server running on Port", port)
 	log.Fatal(http.ListenAndServe(port, r))
 }

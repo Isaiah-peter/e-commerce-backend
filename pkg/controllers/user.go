@@ -181,7 +181,7 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 
 	if token["IsAdmin"] == true {
 		u := db.Find(&user).Value
-		u_five := db.Find(&user).Limit(5).Value
+		u_five := db.Find(&user).Limit(5).Order("created_at DESC").Value
 		if len(new) != 0 {
 			res, _ := json.Marshal(u_five)
 			w.Header().Set("Content-Type", "publication/json")

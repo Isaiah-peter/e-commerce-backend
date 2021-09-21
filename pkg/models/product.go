@@ -11,18 +11,18 @@ var (
 
 type Product struct {
 	gorm.Model
-	Title       string `json:"title" binding:"required"`
-	Desc       string `json:"description" binding:"required"`
-	Price      int64 `json:"price" binding:"required"`
-	Categories  []Category
-	Color      string  `json:"color"`
-	ImageUrl   string `json:"image_url" binding:"required"`
-	Size       string `json:"size"`
+	Title        string `json:"title" binding:"required"`
+	Desc         string `json:"description" binding:"required"`
+	Price        int64 `json:"price" binding:"required"`
+	Categories   []Category
+	Color        string  `json:"color"`
+	ImageUrl   	 string `json:"image_url" binding:"required"`
+	Size      	 string `json:"size"`
 }
 
 type Category struct {
 	gorm.Model
-	Name string `json:"name"`
+	Name 	  string `json:"name"`
 	ProductID int64 `json:"product_id"`
 }
 
@@ -46,6 +46,6 @@ func (c *Category) CreateCategory() *Category {
 
 func GetProductById(Id int64) (*Product, *gorm.DB) {
 	var getUser Product
-	db := dbu.Where("ID=?", Id).Find(&getUser)
+	db := dbu.Where("ID=?", Id).Preload("Category").Find(&getUser)
 	return &getUser, db
 }
