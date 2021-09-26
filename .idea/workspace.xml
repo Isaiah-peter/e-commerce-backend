@@ -5,19 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9f5c650b-11cc-4384-8fec-9a7c4415aa95" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pkg/controllers/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/models/cart.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/models/order.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/models/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/routes/auth.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/routes/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/util/hashpasword.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/util/token.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/util/utils.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/controllers/order.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/controllers/stripe.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/models/stripe.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/routes/order.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/controllers/cart.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/controllers/cart.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/controllers/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/controllers/product.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/controllers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/controllers/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/models/cart.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/models/cart.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/models/order.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/models/order.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/models/product.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/models/product.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/models/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/routes/cart.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/routes/cart.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

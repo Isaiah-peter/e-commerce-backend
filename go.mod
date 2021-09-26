@@ -7,5 +7,6 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
+	github.com/stripe/stripe-go v70.15.0+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20210915214749-c084706c2272 // indirect
 )

@@ -141,7 +141,6 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	}
-
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
@@ -165,16 +164,24 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
+	}else {
+		res,_ := json.Marshal( "this is not your account and you are not an admin")
+		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write(res)
 	}
+
 }
 
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	token := utils.UseToken(r)
 	new := r.URL.Query()["new"]
 	var user []models.User
-	u := db.Find(&user).Value
-	u_five := db.Find(&user).Order("user_name ASC").Limit(5).Value
+
 	if token["IsAdmin"] == true {
+		u := db.Find(&user).Value
+		u_five := db.Find(&user).Limit(5).Order("created_at DESC").Value
 		if len(new) != 0 {
 			res, _ := json.Marshal(u_five)
 			w.Header().Set("Content-Type", "publication/json")
@@ -192,7 +199,7 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 		res,_ := json.Marshal( "you are not an admin")
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
 	}
 
@@ -203,8 +210,9 @@ func GetUserUsername(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query()["username"]
 	token := utils.UseToken(r)
 	var user []models.User
-	u := db.Where("user_name=?", username).Find(&user).Value
+
 	if token["IsAdmin"] == true {
+		u := db.Where("user_name=?", username).Find(&user).Value
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -214,8 +222,9 @@ func GetUserUsername(w http.ResponseWriter, r *http.Request) {
 		res,_ := json.Marshal( "you are not an admin")
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
 	}
 
 }
+
