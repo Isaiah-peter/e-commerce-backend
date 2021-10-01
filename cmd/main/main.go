@@ -5,18 +5,21 @@ import (
 	"github.com/Isaiah-peter/e-commerce-backend/pkg/routes"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
-	port := "Localhost:5000"
+	os.Setenv("PORT", "5000")
+	port := os.Getenv("PORT")
 	r := mux.NewRouter()
 	routes.AuthUser(r)
 	routes.UserRoute(r)
 	routes.Product(r)
 	routes.OrderRoute(r)
 	routes.CartRoute(r)
-	fmt.Println("server running on Port", port)
-	log.Fatal(http.ListenAndServe(port, r))
+	address := fmt.Sprintf("%s:%s", "localhost", port)
+	fmt.Println("server running on Port", address)
+	log.Fatal(http.ListenAndServe(address, r))
 }
