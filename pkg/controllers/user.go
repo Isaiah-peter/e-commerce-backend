@@ -49,7 +49,7 @@ func FindOne(email string, password string) map[string]interface{} {
 		var resp = map[string]interface{}{"status": false, "message": "Email address not found"}
 		return resp
 	}
-	expireAt := time.Now().Add(time.Minute * 50).Unix()
+	expireAt := time.Now().Add(time.Hour * 24).Unix()
 
 	errf := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if errf != nil && errf == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!

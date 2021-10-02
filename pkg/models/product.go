@@ -15,9 +15,10 @@ type Product struct {
 	Desc         string `json:"description" binding:"required"`
 	Price        int64 `json:"price" binding:"required"`
 	Categories   []Category
-	Color        string  `json:"color"`
+	Color        []Color
 	ImageUrl   	 string `json:"image_url" binding:"required"`
-	Size      	 string `json:"size"`
+	Size      	 []Size
+	InStock      bool ` json:"in_stock"`
 }
 
 type Category struct {
@@ -26,10 +27,22 @@ type Category struct {
 	ProductID int64 `json:"product_id"`
 }
 
+type Color struct {
+	gorm.Model
+	Name 	  string `json:"name"`
+	ProductID int64 `json:"product_id"`
+}
+
+type Size struct {
+	gorm.Model
+	Name 	  string `json:"name"`
+	ProductID int64 `json:"product_id"`
+}
+
 func init() {
 	config.Connect()
 	dbp = config.GetDB()
-	dbp.AutoMigrate(&Product{}, &Category{})
+	dbp.AutoMigrate(&Product{}, &Category{}, &Size{}, &Color{})
 }
 
 func (p *Product) CreateProduct() *Product {
@@ -46,6 +59,6 @@ func (c *Category) CreateCategory() *Category {
 
 func GetProductById(Id int64) (*Product, *gorm.DB) {
 	var getUser Product
-	db := dbu.Where("ID=?", Id).Preload("Category").Find(&getUser)
+	db := dbu.Where("ID=?", Id).Preload("Color").Preload("Size").Preload("Categories").Find(&getUser)
 	return &getUser, db
 }
