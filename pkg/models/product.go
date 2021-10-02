@@ -59,6 +59,6 @@ func (c *Category) CreateCategory() *Category {
 
 func GetProductById(Id int64) (*Product, *gorm.DB) {
 	var getUser Product
-	db := dbu.Where("ID=?", Id).Preload("Category").Preload("Color").Preload("Size").Find(&getUser)
+	db := dbu.Where("ID=?", Id).Preload("Color").Preload("Size").Preload("Categories").Find(&getUser)
 	return &getUser, db
 }

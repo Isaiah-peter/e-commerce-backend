@@ -179,7 +179,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("category",category[0])
 		db.Where("name=?",category).Find(&cat).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
-		u := db.Where("ID=?", strings.Join(id, ",")).Preload("Color").Preload("Size").Preload("Categories").Find(&product).Value
+		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Find(&product).Value
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -191,7 +191,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("color",color[0])
 		db.Where("name=?",color).Find(&colors).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
-		u := db.Where("ID=?", strings.Join(id, ",")).Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
+		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -203,7 +203,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("size",size[0])
 		db.Where("name=?",size).Find(&sizes).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
-		u := db.Where("ID=?", strings.Join(id, ",")).Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
+		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -215,7 +215,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("category",category[0])
 		db.Where("name=?",category).Find(&cat).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
-		u := db.Where("ID=?", strings.Join(id, ",")).Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
+		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
