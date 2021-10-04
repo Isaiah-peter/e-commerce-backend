@@ -12,7 +12,7 @@ var (
 type Charge struct {
 	gorm.Model
 	Source 		string `json:"source"`
-	Amount 		string `json:"amount"`
+	Amount 		int64 `json:"amount"`
 	Currency 	string `json:"currency"`
 }
 
