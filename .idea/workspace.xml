@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9f5c650b-11cc-4384-8fec-9a7c4415aa95" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main/tmp/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main/tmp/main.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/controllers/stripe.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/controllers/stripe.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/models/stripe.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/models/stripe.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/routes/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/routes/user.go" afterDir="false" />
-    </list>
+    <list default="true" id="9f5c650b-11cc-4384-8fec-9a7c4415aa95" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
