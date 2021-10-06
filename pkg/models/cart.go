@@ -12,7 +12,12 @@ var (
 type Cart struct {
 	gorm.Model
 	UserId 		int64 `json:"user_id" binding:"required"`
+	ProductID 		int64 `json:"product_id" binding:"required"`
 	Product 	[]ProductQty
+	Color		string `json:"color"`
+	Size		string `json:"size"`
+	TotalPrice  string `json:"total_price"`
+	Quantity  		int64  `json:"quantity" binding:"required"`
 }
 
 type ProductQty struct {
