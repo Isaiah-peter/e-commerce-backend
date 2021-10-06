@@ -27,7 +27,7 @@ type Address struct {
 
 type OrderQty struct {
 	gorm.Model
-	ProductID 		int64 `json:"product_id" binding:"required"`
+	CartID 		    int64 `json:"cart_id" binding:"required"`
 	Quantity  		int64  `json:"quantity" binding:"required"`
 	OrderID 		int64 `json:"order_id"`
 }
