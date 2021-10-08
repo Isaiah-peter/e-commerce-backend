@@ -11,9 +11,10 @@ var (
 
 type Charge struct {
 	gorm.Model
-	Source 		string `json:"source"`
-	Amount 		int64 `json:"amount"`
-	Currency 	string `json:"currency"`
+	Amount   int64  `json:"amount"`
+	Currency string `json:"currency"`
+	Email    string `json:"email"`
+	Name     string `json:"name"`
 }
 
 func init() {
@@ -27,4 +28,3 @@ func (c *Charge) CreateStripe() *Charge {
 	dbss.Create(c)
 	return c
 }
-
