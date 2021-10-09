@@ -3,11 +3,12 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/Isaiah-peter/e-commerce-backend/pkg/models"
 	utils "github.com/Isaiah-peter/e-commerce-backend/pkg/util"
 	"github.com/gorilla/mux"
-	"net/http"
-	"strconv"
 )
 
 var (
@@ -15,7 +16,7 @@ var (
 )
 
 func CreateOrder(w http.ResponseWriter, r *http.Request) {
-	token:=utils.UseToken(r)
+	token := utils.UseToken(r)
 	cart := &models.Order{}
 	utils.ParseBody(r, cart)
 	verifiedID, err := strconv.ParseInt(fmt.Sprintf("%.f", token["UserID"]), 0, 0)
@@ -24,7 +25,7 @@ func CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 	cart.UserId = verifiedID
 	cart.Status = "pending"
-	u:= cart.CreateOrder()
+	u := cart.CreateOrder()
 	res, _ := json.Marshal(u)
 	w.Header().Set("Content-Type", "publication/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -64,7 +65,6 @@ func UpdateOrder(w http.ResponseWriter, r *http.Request) {
 	db.Save(&cartDetail)
 }
 
-
 func DeleteOrder(w http.ResponseWriter, r *http.Request) {
 	cart := &models.Order{}
 	utils.UseToken(r)
@@ -80,12 +80,12 @@ func DeleteOrder(w http.ResponseWriter, r *http.Request) {
 
 func GetOrderById(w http.ResponseWriter, r *http.Request) {
 	cart := &models.Order{}
-	token:= utils.UseToken(r)
+	token := utils.UseToken(r)
 	verifiedID, err := strconv.ParseInt(fmt.Sprintf("%.f", token["UserID"]), 0, 0)
 	if err != nil {
 		panic(err)
 	}
-	u:=db.Where("user_id=?", verifiedID).Preload("OrderQuantity").Find(&cart).Value
+	u := db.Where("user_id=?", verifiedID).Preload("OrderQuantity").Find(&cart).Value
 	res, _ := json.Marshal(u)
 	w.Header().Set("Content-Type", "publication/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -95,15 +95,26 @@ func GetOrderById(w http.ResponseWriter, r *http.Request) {
 
 func GetOrder(w http.ResponseWriter, r *http.Request) {
 	token := utils.UseToken(r)
+	new := r.URL.Query()["new"]
 	var cart []models.Order
-	if token["IsAdmin"] == true {
-		u := db.Preload("OrderQuantity").Find(&cart).Value
-		res, _ := json.Marshal(u)
-		w.Header().Set("Content-Type", "publication/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
+	if len(new) == 0 {
+		if token["IsAdmin"] == true {
+			u := db.Preload("OrderQuantity").Preload("Address").Order("created_at DESC").Limit(5).Find(&cart).Value
+			res, _ := json.Marshal(u)
+			w.Header().Set("Content-Type", "publication/json")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.WriteHeader(http.StatusOK)
+			w.Write(res)
+		}
+	} else {
+		if token["IsAdmin"] == true {
+			u := db.Preload("OrderQuantity").Preload("Address").Find(&cart).Value
+			res, _ := json.Marshal(u)
+			w.Header().Set("Content-Type", "publication/json")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.WriteHeader(http.StatusOK)
+			w.Write(res)
+		}
 	}
+
 }
-
-
