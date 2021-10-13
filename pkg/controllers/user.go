@@ -3,21 +3,20 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/Isaiah-peter/e-commerce-backend/pkg/config"
 	"github.com/Isaiah-peter/e-commerce-backend/pkg/models"
 	utils "github.com/Isaiah-peter/e-commerce-backend/pkg/util"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
-	"strconv"
-	"time"
 )
 
-
-
 var (
-	db = config.GetDB()
+	db      = config.GetDB()
 	NewUser models.User
 )
 
@@ -164,8 +163,8 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
-	}else {
-		res,_ := json.Marshal( "this is not your account and you are not an admin")
+	} else {
+		res, _ := json.Marshal("this is not your account and you are not an admin")
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusUnauthorized)
@@ -181,22 +180,22 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 
 	if token["IsAdmin"] == true {
 		u := db.Find(&user).Value
-		u_five := db.Find(&user).Limit(5).Order("created_at DESC").Value
+		u_five := db.Order("created_at DESC").Limit(5).Find(&user).Value
 		if len(new) != 0 {
 			res, _ := json.Marshal(u_five)
 			w.Header().Set("Content-Type", "publication/json")
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.WriteHeader(http.StatusOK)
 			w.Write(res)
-		}else {
+		} else {
 			res, _ := json.Marshal(u)
 			w.Header().Set("Content-Type", "publication/json")
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.WriteHeader(http.StatusOK)
 			w.Write(res)
 		}
-	}else {
-		res,_ := json.Marshal( "you are not an admin")
+	} else {
+		res, _ := json.Marshal("you are not an admin")
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusUnauthorized)
@@ -204,7 +203,6 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
-
 
 func GetUserUsername(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query()["username"]
@@ -218,8 +216,8 @@ func GetUserUsername(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
-	}else {
-		res,_ := json.Marshal( "you are not an admin")
+	} else {
+		res, _ := json.Marshal("you are not an admin")
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusUnauthorized)
@@ -228,3 +226,18 @@ func GetUserUsername(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func UserStat(w http.ResponseWriter, r *http.Request) {
+	token := utils.UseToken(r)
+	date := time.Now()
+	mouth := date.Month()
+	lastmouth := date.AddDate(0, -1, 0)
+	var user []models.User
+	if token["IsAdmin"] == true {
+		u := db.Where("WHERE created_at BETWEEN %s AND %s", mouth, lastmouth).Order("month(created_at)").Find(&user).Value
+		res, _ := json.Marshal(u)
+		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write(res)
+	}
+}

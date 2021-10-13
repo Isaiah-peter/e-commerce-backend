@@ -11,20 +11,20 @@ var (
 
 type Cart struct {
 	gorm.Model
-	UserId 		int64 `json:"user_id" binding:"required"`
-	ProductID 		int64 `json:"product_id" binding:"required"`
-	Product 	[]ProductQty
-	Color		string `json:"color"`
-	Size		string `json:"size"`
-	TotalPrice  string `json:"total_price"`
-	Quantity  		int64  `json:"quantity" binding:"required"`
+	UserId     int64 `json:"user_id" binding:"required"`
+	ProductID  int64 `json:"product_id" binding:"required"`
+	Product    []ProductQty
+	Color      string `json:"color"`
+	Size       string `json:"size"`
+	TotalPrice string `json:"total_price"`
+	Quantity   int64  `json:"quantity" binding:"required"`
 }
 
 type ProductQty struct {
 	gorm.Model
-	ProductID 		int64 `json:"product_id" binding:"required"`
-	Quantity  		int64  `json:"quantity" binding:"required"`
-	CartID 			int64 `json:"cart_id"`
+	ProductID int64 `json:"product_id" binding:"required"`
+	Quantity  int64 `json:"quantity" binding:"required"`
+	CartID    int64 `json:"cart_id"`
 }
 
 func init() {
@@ -40,8 +40,7 @@ func (c *Cart) CreateCart() *Cart {
 }
 
 func GetCartById(Id int64) (*Cart, *gorm.DB) {
-var getUser Cart
-db := dbu.Where("ID=?", Id).Preload("Product").Find(&getUser)
-return &getUser, db
+	var getUser Cart
+	db := dbu.Where("ID=?", Id).Preload("Product").Find(&getUser)
+	return &getUser, db
 }
-

@@ -11,32 +11,32 @@ var (
 
 type Product struct {
 	gorm.Model
-	Title        string `json:"title" binding:"required"`
-	Desc         string `json:"description" binding:"required"`
-	Price        int64 `json:"price" binding:"required"`
-	Categories   []Category
-	Color        []Color
-	ImageUrl   	 string `json:"image_url" binding:"required"`
-	Size      	 []Size
-	InStock      bool ` json:"in_stock"`
+	Title      string `json:"title" binding:"required"`
+	Desc       string `json:"description" binding:"required"`
+	Price      int64  `json:"price" binding:"required"`
+	Categories []Category
+	Color      []Color
+	ImageUrl   string `json:"image_url" binding:"required"`
+	Size       []Size
+	InStock    int64 ` json:"in_stock"`
 }
 
 type Category struct {
 	gorm.Model
-	Name 	  string `json:"name"`
-	ProductID int64 `json:"product_id"`
+	Name      string `json:"name"`
+	ProductID int64  `json:"product_id"`
 }
 
 type Color struct {
 	gorm.Model
-	Name 	  string `json:"name"`
-	ProductID int64 `json:"product_id"`
+	Name      string `json:"name"`
+	ProductID int64  `json:"product_id"`
 }
 
 type Size struct {
 	gorm.Model
-	Name 	  string `json:"name"`
-	ProductID int64 `json:"product_id"`
+	Name      string `json:"name"`
+	ProductID int64  `json:"product_id"`
 }
 
 func init() {
