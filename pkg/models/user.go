@@ -8,9 +8,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var (
-	dbu *gorm.DB
-)
 
 type User struct {
 	gorm.Model
@@ -28,8 +25,8 @@ type Token struct {
 
 func init() {
 	config.Connect()
-	dbu = config.GetDB()
-	dbu.AutoMigrate(&User{})
+	db = config.GetDB()
+	db.AutoMigrate(&User{})
 }
 
 func (u *User) CreateUser() *User {
@@ -39,19 +36,19 @@ func (u *User) CreateUser() *User {
 		panic(err)
 	}
 	u.Password = hashPassword
-    dbc.NewRecord(u)
-    dbc.Create(u)
+    db.NewRecord(u)
+    db.Create(u)
     return u
 }
 
 func GetUserById(Id int64) (*User, *gorm.DB) {
 	var getUser User
-	db := dbu.Where("ID=?", Id).Find(&getUser)
+	db := db.Where("ID=?", Id).Find(&getUser)
 	return &getUser, db
 }
 
 func DeleteUser(Id int64) User {
 	var user User
-	dbu.Where("ID=?", Id).Delete(user)
+	db.Where("ID=?", Id).Delete(user)
 	return user
 }

@@ -5,9 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var (
-	dbc *gorm.DB
-)
 
 type Cart struct {
 	gorm.Model
@@ -29,18 +26,18 @@ type ProductQty struct {
 
 func init() {
 	config.Connect()
-	dbc = config.GetDB()
-	dbc.AutoMigrate(&Cart{}, &ProductQty{})
+	db = config.GetDB()
+	db.AutoMigrate(&Cart{}, &ProductQty{})
 }
 
 func (c *Cart) CreateCart() *Cart {
-	dbc.NewRecord(c)
-	dbc.Create(c)
+	db.NewRecord(c)
+	db.Create(c)
 	return c
 }
 
 func GetCartById(Id int64) (*Cart, *gorm.DB) {
 	var getUser Cart
-	db := dbu.Where("ID=?", Id).Preload("Product").Find(&getUser)
+	db := db.Where("ID=?", Id).Preload("Product").Find(&getUser)
 	return &getUser, db
 }

@@ -1,0 +1,36 @@
+# 🛒 E-Commerce Backend (Go)
+
+A backend service for an **e-commerce application**, built with **Golang**.  
+It provides core functionality such as user management, authentication, product catalog, shopping cart, and order processing.
+
+---
+
+## 🚀 Features
+
+- **Authentication & Authorization**
+  - User registration and login
+  - JWT-based authentication
+  - Role-based access control (admin, customer)
+
+- **User Management**
+  - Profile management
+  - Secure password handling
+
+- **Product Management**
+  - Add, update, and delete products
+  - View product catalog
+  - Categories and inventory tracking
+
+- **Shopping Cart**
+  - Add/remove items from cart
+  - Cart persistence per user
+  - Automatic total calculation
+
+- **Orders**
+  - Place and track orders
+  - Order lifecycle management
+
+- **Payments (Planned)**
+  - Integration with third-party payment gateways (Stripe, PayPal, Flutterwave)
+
+

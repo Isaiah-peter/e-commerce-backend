@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	dbp *gorm.DB
+	db *gorm.DB
 )
 
 type Product struct {
@@ -41,24 +41,24 @@ type Size struct {
 
 func init() {
 	config.Connect()
-	dbp = config.GetDB()
-	dbp.AutoMigrate(&Product{}, &Category{}, &Size{}, &Color{})
+	db = config.GetDB()
+	db.AutoMigrate(&Product{}, &Category{}, &Size{}, &Color{})
 }
 
 func (p *Product) CreateProduct() *Product {
-	dbp.NewRecord(p)
-	dbp.Create(p)
+	db.NewRecord(p)
+	db.Create(p)
 	return p
 }
 
 func (c *Category) CreateCategory() *Category {
-	dbp.NewRecord(c)
-	dbp.Create(c)
+	db.NewRecord(c)
+	db.Create(c)
 	return c
 }
 
 func GetProductById(Id int64) (*Product, *gorm.DB) {
-	var getUser Product
-	db := dbu.Where("ID=?", Id).Preload("Color").Preload("Size").Preload("Categories").Find(&getUser)
-	return &getUser, db
+	var GetProduct Product
+	db := db.Where("ID=?", Id).Preload("Color").Preload("Size").Preload("Categories").Find(&GetProduct)
+	return &GetProduct, db
 }

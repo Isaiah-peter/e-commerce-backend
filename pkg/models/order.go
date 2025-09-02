@@ -5,10 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var (
-	dbo *gorm.DB
-)
-
 
 type Order struct {
 	gorm.Model
@@ -33,19 +29,19 @@ type OrderQty struct {
 }
 func init() {
 	config.Connect()
-	dbo = config.GetDB()
-	dbc.AutoMigrate(&Order{}, &Address{}, &OrderQty{})
+	db := config.GetDB()
+	db.AutoMigrate(&Order{}, &Address{}, &OrderQty{})
 }
 
 func (c *Order) CreateOrder() *Order {
-	dbc.NewRecord(c)
-	dbc.Create(c)
+	db.NewRecord(c)
+	db.Create(c)
 	return c
 }
 
 func GetOrderById(Id int64) (*Order, *gorm.DB) {
 	var getUser Order
-	db := dbu.Where("ID=?", Id).Preload("OrderQuantity").Find(&getUser)
+	db := db.Where("ID=?", Id).Preload("OrderQuantity").Find(&getUser)
 	return &getUser, db
 }
 
