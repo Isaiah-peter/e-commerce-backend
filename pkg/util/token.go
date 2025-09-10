@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
@@ -19,11 +20,12 @@ func ExtractToken(r *http.Request) string {
 
 func VerifyToken(r *http.Request) (*jwt.Token, error) {
 	tokenString := ExtractToken(r)
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signin method: %v", t.Header["alg"])
 		}
-		return []byte("my_secret_key"), nil
+		jwtSecret := os.Getenv("JWT_SECRET")
+		return []byte(jwtSecret), nil
 	})
 	if err != nil {
 		return nil, err
