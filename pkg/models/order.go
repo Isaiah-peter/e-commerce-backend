@@ -28,7 +28,6 @@ type OrderQty struct {
 	OrderID 		int64 `json:"order_id"`
 }
 func init() {
-	config.Connect()
 	db := config.GetDB()
 	db.AutoMigrate(&Order{}, &Address{}, &OrderQty{})
 }

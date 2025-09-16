@@ -40,7 +40,6 @@ type Size struct {
 }
 
 func init() {
-	config.Connect()
 	db = config.GetDB()
 	db.AutoMigrate(&Product{}, &Category{}, &Size{}, &Color{})
 }

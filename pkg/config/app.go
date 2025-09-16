@@ -22,6 +22,7 @@ func Connect() {
 	db_credentials := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"))
 	d, err := gorm.Open("mysql", db_credentials)
 	if err != nil {
+		log.Println("Fail to connect to database")
 		panic(err)
 	}
 	log.Println("Connection Opened to Database")

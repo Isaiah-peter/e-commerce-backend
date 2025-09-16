@@ -4,11 +4,6 @@ import (
 	"github.com/Isaiah-peter/e-commerce-backend/pkg/config"
 	"github.com/jinzhu/gorm"
 )
-
-var (
-	dbss *gorm.DB
-)
-
 type Charge struct {
 	gorm.Model
 	Amount   int64  `json:"amount"`
@@ -18,13 +13,12 @@ type Charge struct {
 }
 
 func init() {
-	config.Connect()
-	dbss = config.GetDB()
-	dbss.AutoMigrate(&Charge{})
+	db = config.GetDB()
+	db.AutoMigrate(&Charge{})
 }
 
 func (c *Charge) CreateStripe() *Charge {
-	dbss.NewRecord(c)
-	dbss.Create(c)
+	db.NewRecord(c)
+	db.Create(c)
 	return c
 }

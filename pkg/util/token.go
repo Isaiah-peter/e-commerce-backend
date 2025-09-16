@@ -38,7 +38,7 @@ func ValidToken(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
+	if !token.Valid {
 		return err
 	}
 	return nil
