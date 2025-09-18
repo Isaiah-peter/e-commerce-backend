@@ -3,34 +3,81 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Isaiah-peter/e-commerce-backend/pkg/models"
-	"github.com/Isaiah-peter/e-commerce-backend/pkg/util"
-	"github.com/gorilla/mux"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
+
+	"github.com/Isaiah-peter/e-commerce-backend/pkg/models"
+	utils "github.com/Isaiah-peter/e-commerce-backend/pkg/util"
+	"github.com/gorilla/mux"
+
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
+
 
 var (
 	NewProduct models.Product
 	NewCat models.Category
 )
 
+// DRY Cloudinary multi-image upload helper
+func uploadImagesToCloudinary(r *http.Request) ([]string, error) {
+	err := r.ParseMultipartForm(32 << 20) // 32MB
+	if err != nil {
+		return nil, err
+	}
+	files := r.MultipartForm.File["images"]
+	if len(files) < 1 || len(files) > 6 {
+		return nil, fmt.Errorf("must upload between 1 and 6 images")
+	}
+	cld, _ := cloudinary.NewFromURL(os.Getenv("CLOUDINARY_URL"))
+	urls := make([]string, 0, len(files))
+	for _, fh := range files {
+		file, err := fh.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+		buf := make([]byte, 0)
+		tmp := make([]byte, 1024)
+		for {
+			n, err := file.Read(tmp)
+			if n > 0 {
+				buf = append(buf, tmp[:n]...)
+			}
+			if err != nil {
+				break
+			}
+		}
+		uploadRes, err := cld.Upload.Upload(r.Context(), buf, uploader.UploadParams{})
+		if err != nil {
+			return nil, err
+		}
+		urls = append(urls, uploadRes.SecureURL)
+	}
+	return urls, nil
+}
+
 func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	token := utils.UseToken(r)
 	product := &models.Product{}
 	utils.ParseBody(r, product)
 	if token["IsAdmin"] == true {
+		// Try to upload images if present
+		if urls, err := uploadImagesToCloudinary(r); err == nil {
+			product.ImageUrls = urls
+		}
 		u := product.CreateProduct()
-
 		res, _ := json.Marshal(u)
-		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
-	}else {
+	} else {
 		res, _ := json.Marshal("you are not a seller contact an admin to make you a seller")
-		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
@@ -74,16 +121,11 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		if product.Categories != nil {
 			productDetail.Categories = product.Categories
 		}
-
 		if product.Color != nil {
 			productDetail.Color = product.Color
 		}
 		if product.Price <= 0 {
 			productDetail.Price = product.Price
-		}
-
-		if product.ImageUrl != "" {
-			productDetail.ImageUrl = product.ImageUrl
 		}
 		if product.Desc != "" {
 			productDetail.Desc = product.Desc
@@ -95,11 +137,18 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 			productDetail.Size = product.Size
 		}
 
+		// Try to upload new images if present
+		if urls, err := uploadImagesToCloudinary(r); err == nil {
+			productDetail.ImageUrls = urls
+		} else if len(product.ImageUrls) > 0 {
+			productDetail.ImageUrls = product.ImageUrls
+		}
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		dr.Save(&productDetail)
-	}else {
+	} else {
 		res, _ := json.Marshal("you are not an admin ")
-		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
