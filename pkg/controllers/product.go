@@ -3,34 +3,70 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Isaiah-peter/e-commerce-backend/pkg/models"
-	"github.com/Isaiah-peter/e-commerce-backend/pkg/util"
-	"github.com/gorilla/mux"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
+
+	"github.com/Isaiah-peter/e-commerce-backend/pkg/models"
+	utils "github.com/Isaiah-peter/e-commerce-backend/pkg/util"
+	"github.com/gorilla/mux"
+
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
+
 
 var (
 	NewProduct models.Product
-	NewCat models.Category
+	NewCat     models.Category
 )
+
+// DRY Cloudinary upload helper
+func uploadImageToCloudinary(r *http.Request) (string, error) {
+	file, _, err := r.FormFile("image")
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+	buf := make([]byte, 0)
+	tmp := make([]byte, 1024)
+	for {
+		n, err := file.Read(tmp)
+		if n > 0 {
+			buf = append(buf, tmp[:n]...)
+		}
+		if err != nil {
+			break
+		}
+	}
+	cld, _ := cloudinary.NewFromURL(os.Getenv("CLOUDINARY_URL"))
+	uploadRes, err := cld.Upload.Upload(r.Context(), buf, uploader.UploadParams{})
+	if err != nil {
+		return "", err
+	}
+	return uploadRes.SecureURL, nil
+}
 
 func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	token := utils.UseToken(r)
 	product := &models.Product{}
 	utils.ParseBody(r, product)
-	if token["IsAdmin"] == true {
-		u := product.CreateProduct()
 
+	if token["IsAdmin"] == true {
+		// Try to upload image if present
+		if url, err := uploadImageToCloudinary(r); err == nil {
+			product.ImageUrl = url
+		}
+		u := product.CreateProduct()
 		res, _ := json.Marshal(u)
-		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
-	}else {
+	} else {
 		res, _ := json.Marshal("you are not a seller contact an admin to make you a seller")
-		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
@@ -48,7 +84,7 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
-	}else {
+	} else {
 		res, _ := json.Marshal("you are not a seller contact an admin to make you a seller")
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -74,16 +110,11 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		if product.Categories != nil {
 			productDetail.Categories = product.Categories
 		}
-
 		if product.Color != nil {
 			productDetail.Color = product.Color
 		}
 		if product.Price <= 0 {
 			productDetail.Price = product.Price
-		}
-
-		if product.ImageUrl != "" {
-			productDetail.ImageUrl = product.ImageUrl
 		}
 		if product.Desc != "" {
 			productDetail.Desc = product.Desc
@@ -95,11 +126,18 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 			productDetail.Size = product.Size
 		}
 
+		// Try to upload new image if present
+		if url, err := uploadImageToCloudinary(r); err == nil {
+			productDetail.ImageUrl = url
+		} else if product.ImageUrl != "" {
+			productDetail.ImageUrl = product.ImageUrl
+		}
+
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		dr.Save(&productDetail)
-	}else {
+	} else {
 		res, _ := json.Marshal("you are not an admin ")
-		w.Header().Set("Content-Type", "publication/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(res)
@@ -118,13 +156,13 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	if token["IsAdmin"] == true {
-		u := db.Where("ID=?",id).Delete(&product)
+		u := db.Where("ID=?", id).Delete(&product)
 		res, _ := json.Marshal(u)
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
-	}else {
+	} else {
 		res, _ := json.Marshal("you are not an admin ")
 		w.Header().Set("Content-Type", "publication/json")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -140,16 +178,15 @@ func GetProductById(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-		productDetail, _ := models.GetProductById(id)
-		res, _ := json.Marshal(productDetail)
-		w.Header().Set("Content-Type", "publication/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.WriteHeader(http.StatusOK)
-		w.Write(res)
+	productDetail, _ := models.GetProductById(id)
+	res, _ := json.Marshal(productDetail)
+	w.Header().Set("Content-Type", "publication/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
 }
 
 func GetProduct(w http.ResponseWriter, r *http.Request) {
-	utils.UseToken(r)
 	var product []models.Product
 	var new = r.URL.Query()["new"]
 	var color = r.URL.Query()["color"]
@@ -176,8 +213,8 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 	}
 	if len(category) != 0 {
-		fmt.Println("category",category[0])
-		db.Where("name=?",category).Find(&cat).Pluck("product_id", &id)
+		fmt.Println("category", category[0])
+		db.Where("name=?", category).Find(&cat).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
 		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Find(&product).Value
 		res, _ := json.Marshal(u)
@@ -188,8 +225,8 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(color) != 0 {
-		fmt.Println("color",color[0])
-		db.Where("name=?",color).Find(&colors).Pluck("product_id", &id)
+		fmt.Println("color", color[0])
+		db.Where("name=?", color).Find(&colors).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
 		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(u)
@@ -200,8 +237,8 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(size) != 0 {
-		fmt.Println("size",size[0])
-		db.Where("name=?",size).Find(&sizes).Pluck("product_id", &id)
+		fmt.Println("size", size[0])
+		db.Where("name=?", size).Find(&sizes).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
 		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(u)
@@ -212,8 +249,8 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(category) != 0 && len(new) != 0 {
-		fmt.Println("category",category[0])
-		db.Where("name=?",category).Find(&cat).Pluck("product_id", &id)
+		fmt.Println("category", category[0])
+		db.Where("name=?", category).Find(&cat).Pluck("product_id", &id)
 		fmt.Println(strings.Join(id, ","))
 		u := db.Where("ID IN (" + strings.Join(id[:], ",") + ")").Preload("Color").Preload("Size").Preload("Categories").Limit(5).Order("created_at DESC").Find(&product).Value
 		res, _ := json.Marshal(u)
@@ -223,5 +260,3 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 		w.Write(res)
 	}
 }
-
-
