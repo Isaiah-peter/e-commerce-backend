@@ -20,6 +20,26 @@ var (
 	NewUser models.User
 )
 
+func GenerateToken (user *models.User) string {
+	expireAt := time.Now().Add(time.Hour * 24).Unix()
+	tk := &models.Token{
+		UserID:  int64(user.ID),
+		IsAdmin: user.IsAdmin,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expireAt,
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
+
+	tokenString, err := token.SignedString([]byte("my_secret_key"))
+	if err != nil {
+		panic(err)
+	}
+
+	return tokenString
+}
+
 func Register(w http.ResponseWriter, r *http.Request) {
 	var user = &models.User{}
 	utils.ParseBody(r, user)
@@ -48,7 +68,6 @@ func FindOne(email string, password string) map[string]interface{} {
 		var resp = map[string]interface{}{"status": false, "message": "Email address not found"}
 		return resp
 	}
-	expireAt := time.Now().Add(time.Hour * 24).Unix()
 
 	errf := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if errf != nil && errf == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
@@ -56,20 +75,7 @@ func FindOne(email string, password string) map[string]interface{} {
 		return resp
 	}
 
-	tk := &models.Token{
-		UserID:  int64(user.ID),
-		IsAdmin: user.IsAdmin,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireAt,
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tk)
-
-	tokenString, err := token.SignedString([]byte("my_secret_key"))
-	if err != nil {
-		panic(err)
-	}
+	tokenString := GenerateToken(user)
 
 	var resp = map[string]interface{}{"status": true, "message": "logged in"}
 	resp["token"] = tokenString
@@ -110,7 +116,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		if user.Email != "" {
 			userDetail.Email = user.Email
 		}
-		if user.IsAdmin != false {
+		if user.IsAdmin {
 			userDetail.IsAdmin = user.IsAdmin
 		}
 
