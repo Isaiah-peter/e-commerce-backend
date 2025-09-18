@@ -20,88 +20,89 @@ A scalable **e-commerce backend API** built with **Golang**, featuring authentic
 
 - **Orders**
   - Place orders from cart
-  - Order history & status updates
 
-- **Utilities**
-  - Secure password hashing (bcrypt)
-  - JWT-based authentication
-  - Structured JSON responses
+  # E-Commerce Backend (Go)
 
-- **Planned**
-  - Payment gateway integration (Stripe, PayPal, Flutterwave)
-  - Swagger API documentation
-  - CI/CD pipeline
+  This is a backend API for an e-commerce platform built with Go, GORM, Gorilla Mux, and Cloudinary for image uploads. It supports user authentication, product management, cart, orders, and more.
 
----
+  ## Features
+  - User authentication (OAuth, JWT)
+  - Product CRUD with support for multiple images (Cloudinary integration)
+  - Category, Color, and Size management
+  - Cart and Order management
+  - Stripe payment integration
+  - Secure password hashing
+  - RESTful API design
 
-## 📂 Project Structure
+  ## Tech Stack
+  - Go (Golang)
+  - GORM (ORM)
+  - Gorilla Mux (Router)
+  - Cloudinary (Image hosting)
+  - Stripe (Payments)
+  - JWT (Authentication)
 
-```
-.
-├── cmd/                # Entry point (main.go)
-├── pkg/
-│   ├── config/         # App & DB configuration
-│   ├── routes/         # API routes
-│   ├── controllers/    # HTTP request handlers
-│   ├── services/       # Business logic
-│   ├── repository/     # Database queries
-│   ├── models/         # Database schemas
-│   ├── middleware/     # Auth, logging, etc.
-│   └── util/           # JWT, hashing, helpers
-├── tests/              # Unit & integration tests
-├── Dockerfile
-├── docker-compose.yml
-├── go.mod / go.sum
-└── README.md
-```
+  ## Getting Started
 
----
+  ### Prerequisites
+  - Go 1.24+
+  - Cloudinary account (for image uploads)
+  - Stripe account (for payments)
+  - Database (e.g., PostgreSQL, MySQL)
 
-## ⚙️ Installation & Setup
+  ### Installation
+  1. Clone the repository:
+    ```bash
+    git clone https://github.com/Isaiah-peter/e-commerce-backend.git
+    cd e-commerce-backend
+    ```
+  2. Install dependencies:
+    ```bash
+    go mod tidy
+    ```
+  3. Set environment variables:
+    - `CLOUDINARY_URL` (Cloudinary credentials)
+    - Database credentials (see `pkg/config/app.go`)
+    - Stripe keys
 
-### Prerequisites
-- [Go 1.21+](https://go.dev/dl/)  
-- [PostgreSQL](https://www.postgresql.org/) or MySQL  
-- [Docker](https://www.docker.com/) (optional)
+  ### Running the Server
+  ```bash
+  go run cmd/main.go
+  ```
 
-### Clone the Repository
-```bash
-git clone https://github.com/Isaiah-peter/e-commerce-backend.git
-cd e-commerce-backend
-```
+  ## API Endpoints
 
-### Install Dependencies
-```bash
-go mod tidy
-```
+  ### Product
+  - `POST /products` - Create product (supports 1-6 images)
+  - `PUT /products/{id}` - Update product (supports image update)
+  - `GET /products` - List products
+  - `GET /products/{id}` - Get product by ID
+  - `DELETE /products/{id}` - Delete product
 
-### Environment Variables
-Create a `.env` file in the root directory:
+  ### Category, Color, Size
+  - CRUD endpoints for each
 
-```env
-PORT=8080
-DB_URL=postgres://username:password@localhost:5432/ecommerce?sslmode=disable
-JWT_SECRET=your_jwt_secret_key
-```
+  ### Cart & Order
+  - Add to cart, checkout, order history
 
-You can also copy from the example file:
-```bash
-cp .env.example .env
-```
+  ### Auth
+  - Register, login, OAuth
 
----
+  ## Image Uploads
+  - Products support 1-6 images per product
+  - Images are uploaded to Cloudinary via multipart form-data (`images` key)
 
-## ▶️ Running the App
+  ## Stripe Payments
+  - Integrated for order checkout
 
-### Run Locally
-```bash
-go run cmd/main.go
-```
+  ## Contributing
+  Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
-### Run with Docker
-```bash
-docker-compose up --build
-```
+  ## License
+  MIT
+
+  ## Author
+  Isaiah Peter
 
 The server will start at **http://localhost:8080**
 
