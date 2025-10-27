@@ -16,9 +16,9 @@ type Product struct {
 	Price      int64  `json:"price" binding:"required"`
 	Categories []Category
 	Color      []Color
-	ImageUrl   string `json:"image_url" binding:"required"`
+	ImageUrls  []string `gorm:"type:json" json:"image_urls" binding:"required"`
 	Size       []Size
-	InStock    int64 ` json:"in_stock"`
+	InStock    int64 `json:"in_stock"`
 }
 
 type Category struct {

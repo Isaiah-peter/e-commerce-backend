@@ -6,17 +6,10 @@ A scalable **e-commerce backend API** built with **Golang**, featuring authentic
 
 ## 🚀 Features
 
-- **Authentication & Authorization**
-  - User registration & login (JWT-based)
-  - Role-based access control (Admin, Customer)
 
-- **Product Management**
-  - CRUD operations for products & categories
-  - Inventory tracking
+# 🛒 E-Commerce Backend (Go)
 
-- **Shopping Cart**
-  - Add / update / remove items
-  - Cart persistence per user
+This project is a scalable backend API for an e-commerce platform, built with Go. It supports user authentication, product management (with multiple images via Cloudinary), cart and order management, and is ready for payment integration.
 
 - **Orders**
   - Place orders from cart
@@ -104,8 +97,50 @@ A scalable **e-commerce backend API** built with **Golang**, featuring authentic
   ## Author
   Isaiah Peter
 
-The server will start at **http://localhost:8080**
+---
 
+## 🧪 Testing
+
+```bash
+go test ./... -v
+```
+
+---
+
+## 📖 API Endpoints (Sample)
+
+| Method | Endpoint              | Description                  |
+|--------|-----------------------|------------------------------|
+| POST   | `/auth/register`      | Register a new user          |
+| POST   | `/auth/login`         | Login and get JWT token      |
+| GET    | `/products`           | Get all products             |
+| POST   | `/products` (Admin)   | Add a new product (1-6 images)|
+| PUT    | `/products/{id}`      | Update product (images)      |
+| GET    | `/cart`               | Get current user’s cart      |
+| POST   | `/orders`             | Place a new order            |
+
+---
+
+## 🛡️ Security
+
+- Passwords hashed with bcrypt
+- JWT authentication
+- Role-based access middleware
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create a new branch
+3. Commit changes
+4. Open a PR
+
+---
+
+## 📜 License
+
+MIT License © 2025 Isaiah Peter
 ---
 
 ## 🧪 Testing
